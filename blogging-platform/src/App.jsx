@@ -197,10 +197,10 @@ function App() {
             <div className="text-gray-400 text-center text-lg">No blogs available</div>
           ) : (
             blogs.map(blog => (
-              <div key={blog._id} className="mb-8 p-6 rounded bg-gray-900 border border-gray-700 shadow">
-                <div className="text-xl font-bold mb-2">{blog.title}</div>
-                <div className="text-gray-300 mb-2 whitespace-pre-line">{blog.content}</div>
-                <div className="text-xs text-gray-500">{new Date(blog.createdAt).toLocaleString()}</div>
+              <div key={blog._id} className={`mb-8 p-6 rounded ${dark ? 'bg-gray-900 border-gray-700' : 'bg-gray-100 border-gray-300'} border shadow`}>
+                <div className={`text-xl font-bold mb-2 ${dark ? 'text-white' : 'text-black'}`}>{blog.title}</div>
+                <div className={`mb-2 whitespace-pre-line ${dark ? 'text-gray-300' : 'text-gray-800'}`}>{blog.content}</div>
+                <div className={`text-xs ${dark ? 'text-gray-500' : 'text-gray-600'}`}>{new Date(blog.createdAt).toLocaleString()}</div>
               </div>
             ))
           )}
