@@ -1,10 +1,11 @@
 import { useState, useEffect } from 'react'
 import './index.css'
 import DarkModeIcon from './assets/darkmode.png';
-import AdminIcon from './assets/admin.png'; // You need to add an admin icon image to assets
+import AdminIcon from './assets/admin.png';
+import MyXIcon from './assets/myxicon.png';
 
-const PROFILE_IMG = 'https://abs.twimg.com/sticky/default_profile_images/default_profile_400x400.png'; // Replace with your photo URL
-const X_LINK = 'https://x.com/yourusername'; // Replace with your X (Twitter) profile link
+const PROFILE_IMG = MyXIcon;
+const X_LINK = 'https://x.com/basbhaisprite';
 
 function SunIcon({ className = '' }) {
   return (
@@ -31,6 +32,7 @@ function App() {
   const [loginError, setLoginError] = useState('');
   const [publishError, setPublishError] = useState('');
   const [publishSuccess, setPublishSuccess] = useState('');
+  const [selectedBlog, setSelectedBlog] = useState(null);
 
   // Fetch blogs from backend
   useEffect(() => {
@@ -163,7 +165,7 @@ function App() {
             className={`flex items-center justify-center w-10 h-10 rounded-full shadow transition-colors border ${dark ? 'bg-gray-800 text-white hover:bg-gray-700 border-gray-700' : 'bg-gray-200 text-black hover:bg-gray-300 border-gray-300'}`}
             aria-label="Toggle theme"
           >
-            {dark ? <SunIcon className="w-6 h-6" /> : <MoonIcon className="w-6 h-6" />}
+            <img src={DarkModeIcon} alt="Toggle dark mode" className="w-6 h-6" />
           </button>
         </div>
         {/* Blog Publishing Form (admin only) */}
@@ -191,15 +193,32 @@ function App() {
             </button>
           </form>
         )}
-        {/* Blog List (public) */}
+        {/* Blog List (public) or Blog Detail */}
         <div className="w-2/3 mt-8">
-          {blogs.length === 0 ? (
+          {selectedBlog ? (
+            <div className={`p-8 rounded ${dark ? 'bg-gray-900 border-gray-700' : 'bg-gray-100 border-gray-300'} border shadow`}>
+              <button
+                onClick={() => setSelectedBlog(null)}
+                className="mb-6 px-4 py-1 rounded bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold shadow"
+              >
+                ← Back to all blogs
+              </button>
+              <div className={`text-3xl font-bold mb-4 ${dark ? 'text-white' : 'text-black'}`}>{selectedBlog.title}</div>
+              <div className={`mb-6 whitespace-pre-line text-lg ${dark ? 'text-gray-300' : 'text-gray-800'}`}>{selectedBlog.content}</div>
+              <div className={`text-xs ${dark ? 'text-gray-500' : 'text-gray-600'}`}>{new Date(selectedBlog.createdAt).toLocaleString()}</div>
+            </div>
+          ) : blogs.length === 0 ? (
             <div className="text-gray-400 text-center text-lg">No blogs available</div>
           ) : (
             blogs.map(blog => (
-              <div key={blog._id} className={`mb-8 p-6 rounded ${dark ? 'bg-gray-900 border-gray-700' : 'bg-gray-100 border-gray-300'} border shadow`}>
+              <div
+                key={blog._id}
+                className={`mb-8 p-6 rounded cursor-pointer transition hover:scale-[1.01] ${dark ? 'bg-gray-900 border-gray-700 hover:bg-gray-800' : 'bg-gray-100 border-gray-300 hover:bg-gray-200'} border shadow`}
+                onClick={() => setSelectedBlog(blog)}
+                title="Click to read more"
+              >
                 <div className={`text-xl font-bold mb-2 ${dark ? 'text-white' : 'text-black'}`}>{blog.title}</div>
-                <div className={`mb-2 whitespace-pre-line ${dark ? 'text-gray-300' : 'text-gray-800'}`}>{blog.content}</div>
+                <div className={`truncate mb-2 ${dark ? 'text-gray-300' : 'text-gray-800'}`}>{blog.content.length > 200 ? blog.content.slice(0, 200) + '...' : blog.content}</div>
                 <div className={`text-xs ${dark ? 'text-gray-500' : 'text-gray-600'}`}>{new Date(blog.createdAt).toLocaleString()}</div>
               </div>
             ))
