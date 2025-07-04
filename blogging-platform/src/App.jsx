@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import './index.css'
 import DarkModeIcon from './assets/darkmode.png';
 import AdminIcon from './assets/admin.png'; // You need to add an admin icon image to assets
@@ -23,9 +23,80 @@ function App() {
   const [blog, setBlog] = useState('');
   const [showLogin, setShowLogin] = useState(false);
   const [adminPassword, setAdminPassword] = useState('');
+  const [isAdmin, setIsAdmin] = useState(false);
+  const [token, setToken] = useState('');
+  const [blogs, setBlogs] = useState([]);
+  const [blogTitle, setBlogTitle] = useState('');
+  const [blogContent, setBlogContent] = useState('');
+  const [loginError, setLoginError] = useState('');
+  const [publishError, setPublishError] = useState('');
+  const [publishSuccess, setPublishSuccess] = useState('');
+
+  // Fetch blogs from backend
+  useEffect(() => {
+    fetch('http://localhost:5050/api/blogs')
+      .then(res => res.json())
+      .then(data => setBlogs(data))
+      .catch(() => setBlogs([]));
+  }, [publishSuccess]);
+
+  // Handle admin login
+  const handleAdminLogin = async (e) => {
+    e.preventDefault();
+    setLoginError('');
+    try {
+      const res = await fetch('http://localhost:5050/api/auth/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ password: adminPassword })
+      });
+      const data = await res.json();
+      if (res.ok && data.token) {
+        setIsAdmin(true);
+        setToken(data.token);
+        setShowLogin(false);
+        setAdminPassword('');
+      } else {
+        setLoginError(data.error || 'Login failed');
+      }
+    } catch (err) {
+      setLoginError('Login failed');
+    }
+  };
+
+  // Handle blog publish
+  const handlePublish = async (e) => {
+    e.preventDefault();
+    setPublishError('');
+    setPublishSuccess('');
+    if (!blogTitle || !blogContent) {
+      setPublishError('Title and content are required');
+      return;
+    }
+    try {
+      const res = await fetch('http://localhost:5050/api/blogs', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({ title: blogTitle, content: blogContent })
+      });
+      const data = await res.json();
+      if (res.ok) {
+        setPublishSuccess('Blog published!');
+        setBlogTitle('');
+        setBlogContent('');
+      } else {
+        setPublishError(data.error || 'Failed to publish');
+      }
+    } catch (err) {
+      setPublishError('Failed to publish');
+    }
+  };
 
   return (
-    <div className="w-screen h-screen flex items-center justify-center bg-black text-white transition-colors relative">
+    <div className={`w-screen h-screen flex items-center justify-center transition-colors relative ${dark ? 'bg-black text-white' : 'bg-white text-black'}`}>
       {/* Admin Login Button (top right) */}
       <button
         className="absolute top-6 right-8 flex items-center space-x-2 bg-gray-800 hover:bg-gray-700 text-white px-3 py-2 rounded shadow border border-gray-700"
@@ -36,17 +107,18 @@ function App() {
         <span className="hidden sm:inline">Admin</span>
       </button>
       {/* Login Form Dropdown */}
-      {showLogin && (
+      {showLogin && !isAdmin && (
         <div className="absolute top-16 right-8 bg-gray-900 border border-gray-700 rounded shadow-lg p-4 z-50 w-64">
-          <form onSubmit={e => { e.preventDefault(); /* handle login here */ }}>
+          <form onSubmit={handleAdminLogin}>
             <label className="block mb-2 text-sm font-semibold">Admin Password</label>
             <input
               type="password"
-              className="w-full p-2 rounded border border-gray-600 bg-black text-white mb-4 focus:outline-none focus:ring-2 focus:ring-blue-400"
+              className="w-full p-2 rounded border border-gray-600 bg-black text-white mb-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
               value={adminPassword}
               onChange={e => setAdminPassword(e.target.value)}
               placeholder="Enter password"
             />
+            {loginError && <div className="text-red-500 text-sm mb-2">{loginError}</div>}
             <button
               type="submit"
               className="w-full py-2 rounded bg-blue-600 hover:bg-blue-700 text-white font-semibold shadow transition-colors"
@@ -66,23 +138,51 @@ function App() {
           {/* Theme Toggle Button */}
           <button
             onClick={() => setDark((d) => !d)}
-            className="flex items-center justify-center w-10 h-10 rounded-full bg-gray-800 text-white shadow hover:bg-gray-700 transition-colors border border-gray-700"
+            className={`flex items-center justify-center w-10 h-10 rounded-full shadow transition-colors border ${dark ? 'bg-gray-800 text-white hover:bg-gray-700 border-gray-700' : 'bg-gray-200 text-black hover:bg-gray-300 border-gray-300'}`}
             aria-label="Toggle theme"
           >
-            <img src={DarkModeIcon} alt="Toggle dark mode" className="w-6 h-6" />
+            {dark ? <SunIcon className="w-6 h-6" /> : <MoonIcon className="w-6 h-6" />}
           </button>
         </div>
-        <textarea
-          className="w-2/3 h-64 p-4 rounded border border-gray-700 bg-black text-white resize-none focus:outline-none focus:ring-2 focus:ring-blue-400 text-lg placeholder-gray-400"
-          placeholder="Write your daily blog..."
-          value={blog}
-          onChange={e => setBlog(e.target.value)}
-        />
-        <button
-          className="mt-2 px-8 py-2 rounded bg-blue-600 hover:bg-blue-700 text-white font-semibold shadow transition-colors"
-        >
-          Publish
-        </button>
+        {/* Blog Publishing Form (admin only) */}
+        {isAdmin && (
+          <form className="w-2/3 flex flex-col space-y-2" onSubmit={handlePublish}>
+            <input
+              className="p-2 rounded border border-gray-700 bg-black text-white text-lg placeholder-gray-400 mb-2"
+              placeholder="Blog Title"
+              value={blogTitle}
+              onChange={e => setBlogTitle(e.target.value)}
+            />
+            <textarea
+              className="h-40 p-4 rounded border border-gray-700 bg-black text-white resize-none focus:outline-none focus:ring-2 focus:ring-blue-400 text-lg placeholder-gray-400 mb-2"
+              placeholder="Write your blog content..."
+              value={blogContent}
+              onChange={e => setBlogContent(e.target.value)}
+            />
+            {publishError && <div className="text-red-500 text-sm mb-2">{publishError}</div>}
+            {publishSuccess && <div className="text-green-500 text-sm mb-2">{publishSuccess}</div>}
+            <button
+              type="submit"
+              className="px-8 py-2 rounded bg-blue-600 hover:bg-blue-700 text-white font-semibold shadow transition-colors"
+            >
+              Publish
+            </button>
+          </form>
+        )}
+        {/* Blog List (public) */}
+        <div className="w-2/3 mt-8">
+          {blogs.length === 0 ? (
+            <div className="text-gray-400 text-center text-lg">No blogs available</div>
+          ) : (
+            blogs.map(blog => (
+              <div key={blog._id} className="mb-8 p-6 rounded bg-gray-900 border border-gray-700 shadow">
+                <div className="text-xl font-bold mb-2">{blog.title}</div>
+                <div className="text-gray-300 mb-2 whitespace-pre-line">{blog.content}</div>
+                <div className="text-xs text-gray-500">{new Date(blog.createdAt).toLocaleString()}</div>
+              </div>
+            ))
+          )}
+        </div>
       </div>
     </div>
   )
