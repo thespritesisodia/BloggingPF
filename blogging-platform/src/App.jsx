@@ -95,39 +95,61 @@ function App() {
     }
   };
 
+  // Handle logout
+  const handleLogout = () => {
+    setIsAdmin(false);
+    setToken('');
+  };
+
   return (
     <div className={`w-screen h-screen flex items-center justify-center transition-colors relative ${dark ? 'bg-black text-white' : 'bg-white text-black'}`}>
-      {/* Admin Login Button (top right) */}
-      <button
-        className="absolute top-6 right-8 flex items-center space-x-2 bg-gray-800 hover:bg-gray-700 text-white px-3 py-2 rounded shadow border border-gray-700"
-        onClick={() => setShowLogin((v) => !v)}
-        aria-label="Admin Login"
-      >
-        <img src={AdminIcon} alt="Admin" className="w-5 h-5" />
-        <span className="hidden sm:inline">Admin</span>
-      </button>
-      {/* Login Form Dropdown */}
-      {showLogin && !isAdmin && (
-        <div className="absolute top-16 right-8 bg-gray-900 border border-gray-700 rounded shadow-lg p-4 z-50 w-64">
-          <form onSubmit={handleAdminLogin}>
-            <label className="block mb-2 text-sm font-semibold">Admin Password</label>
-            <input
-              type="password"
-              className="w-full p-2 rounded border border-gray-600 bg-black text-white mb-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
-              value={adminPassword}
-              onChange={e => setAdminPassword(e.target.value)}
-              placeholder="Enter password"
-            />
-            {loginError && <div className="text-red-500 text-sm mb-2">{loginError}</div>}
+      {/* Top right: Admin controls */}
+      <div className="absolute top-6 right-8 flex items-center space-x-2 z-50">
+        {!isAdmin ? (
+          <>
             <button
-              type="submit"
-              className="w-full py-2 rounded bg-blue-600 hover:bg-blue-700 text-white font-semibold shadow transition-colors"
+              className="flex items-center space-x-2 bg-gray-800 hover:bg-gray-700 text-white px-3 py-2 rounded shadow border border-gray-700"
+              onClick={() => setShowLogin((v) => !v)}
+              aria-label="Admin Login"
             >
-              Login
+              <img src={AdminIcon} alt="Admin" className="w-5 h-5" />
+              <span className="hidden sm:inline">Admin</span>
             </button>
-          </form>
-        </div>
-      )}
+            {/* Login Form Dropdown */}
+            {showLogin && (
+              <div className="absolute top-12 right-0 bg-gray-900 border border-gray-700 rounded shadow-lg p-4 w-64">
+                <form onSubmit={handleAdminLogin}>
+                  <label className="block mb-2 text-sm font-semibold">Admin Password</label>
+                  <input
+                    type="password"
+                    className="w-full p-2 rounded border border-gray-600 bg-black text-white mb-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
+                    value={adminPassword}
+                    onChange={e => setAdminPassword(e.target.value)}
+                    placeholder="Enter password"
+                  />
+                  {loginError && <div className="text-red-500 text-sm mb-2">{loginError}</div>}
+                  <button
+                    type="submit"
+                    className="w-full py-2 rounded bg-blue-600 hover:bg-blue-700 text-white font-semibold shadow transition-colors"
+                  >
+                    Login
+                  </button>
+                </form>
+              </div>
+            )}
+          </>
+        ) : (
+          <>
+            <span className="font-semibold text-base">Sprite Nestorial Sisodia</span>
+            <button
+              onClick={handleLogout}
+              className="flex items-center space-x-2 bg-gray-800 hover:bg-gray-700 text-white px-3 py-2 rounded shadow border border-gray-700"
+            >
+              Logout
+            </button>
+          </>
+        )}
+      </div>
       {/* Main content */}
       <div className="flex flex-col items-center space-y-8 w-full">
         <div className="flex space-x-6 items-center">
