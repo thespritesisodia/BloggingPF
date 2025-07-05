@@ -20,7 +20,7 @@ function MoonIcon({ className = '' }) {
 }
 
 function App() {
-  const [dark, setDark] = useState(true); // Default to dark mode
+  // Classic black look: no light mode
   const [blog, setBlog] = useState('');
   const [showLogin, setShowLogin] = useState(false);
   const [adminPassword, setAdminPassword] = useState('');
@@ -33,6 +33,7 @@ function App() {
   const [publishError, setPublishError] = useState('');
   const [publishSuccess, setPublishSuccess] = useState('');
   const [selectedBlog, setSelectedBlog] = useState(null);
+  const [dark, setDark] = useState(true); // Default to dark mode
 
   // Fetch blogs from backend
   useEffect(() => {
@@ -165,7 +166,7 @@ function App() {
             className={`flex items-center justify-center w-10 h-10 rounded-full shadow transition-colors border ${dark ? 'bg-gray-800 text-white hover:bg-gray-700 border-gray-700' : 'bg-gray-200 text-black hover:bg-gray-300 border-gray-300'}`}
             aria-label="Toggle theme"
           >
-            <img src={DarkModeIcon} alt="Toggle dark mode" className="w-6 h-6" />
+            <span className="text-2xl font-bold">{dark ? 'L' : 'D'}</span>
           </button>
         </div>
         {/* Blog Publishing Form (admin only) */}
@@ -194,7 +195,7 @@ function App() {
           </form>
         )}
         {/* Blog List (public) or Blog Detail */}
-        <div className="w-2/3 mt-8">
+        <div className="w-full max-w-xl mt-20">
           {selectedBlog ? (
             <div className={`p-8 rounded ${dark ? 'bg-gray-900 border-gray-700' : 'bg-gray-100 border-gray-300'} border shadow`}>
               <button
@@ -226,7 +227,7 @@ function App() {
         </div>
       </div>
     </div>
-  )
+  );
 }
 
-export default App
+export default App;
