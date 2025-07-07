@@ -28,4 +28,17 @@ router.post('/', verifyAdmin, async (req, res) => {
   }
 });
 
+// Delete a blog (admin only)
+router.delete('/:id', verifyAdmin, async (req, res) => {
+  try {
+    const deleted = await Blog.findByIdAndDelete(req.params.id);
+    if (!deleted) {
+      return res.status(404).json({ error: 'Blog not found' });
+    }
+    res.json({ message: 'Blog deleted' });
+  } catch (err) {
+    res.status(500).json({ error: 'Failed to delete blog' });
+  }
+});
+
 module.exports = router; 
