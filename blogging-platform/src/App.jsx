@@ -127,7 +127,7 @@ function App() {
   };
 
   return (
-    <div className={`w-screen flex items-center justify-start transition-colors relative ${dark ? 'bg-black text-white' : 'bg-white text-black'}`}>
+    <div className={`min-h-screen w-full flex flex-col transition-colors relative ${dark ? 'bg-black text-white' : 'bg-white text-black'}`}>
       {/* Top right: Admin controls */}
       <div className="absolute top-6 right-8 flex items-center space-x-2 z-50">
         {!isAdmin ? (
@@ -176,7 +176,7 @@ function App() {
         )}
       </div>
       {/* Main content */}
-      <div className="flex flex-col items-center space-y-8 w-full mt-6">
+      <div className="flex-1 flex flex-col items-center space-y-8 w-full mt-6">
         <div className="flex space-x-6 items-center">
           {/* Profile Button */}
           <a href={X_LINK} target="_blank" rel="noopener noreferrer" className="flex items-center hover:opacity-80">
