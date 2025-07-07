@@ -98,6 +98,28 @@ function App() {
     }
   };
 
+  // Handle blog delete (admin only)
+  const handleDeleteBlog = async (id) => {
+    if (!window.confirm('Are you sure you want to delete this blog?')) return;
+    try {
+      const res = await fetch(`http://localhost:5050/api/blogs/${id}`, {
+        method: 'DELETE',
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+      if (res.ok) {
+        setPublishSuccess('Blog deleted!');
+        setBlogs(blogs.filter(blog => blog._id !== id));
+      } else {
+        const data = await res.json();
+        setPublishError(data.error || 'Failed to delete');
+      }
+    } catch (err) {
+      setPublishError('Failed to delete');
+    }
+  };
+
   // Handle logout
   const handleLogout = () => {
     setIsAdmin(false);
@@ -229,6 +251,16 @@ function App() {
                 <div className={`text-xl font-bold mb-2 ${dark ? 'text-white' : 'text-black'}`}>{blog.title}</div>
                 <div className={`truncate mb-2 ${dark ? 'text-gray-300' : 'text-gray-800'}`}>{blog.content.length > 200 ? blog.content.slice(0, 200) + '...' : blog.content}</div>
                 <div className={`text-xs ${dark ? 'text-gray-500' : 'text-gray-600'}`}>{new Date(blog.createdAt).toLocaleString()}</div>
+                {isAdmin && (
+                  <div className="flex justify-center mt-2">
+                    <button
+                      onClick={e => { e.stopPropagation(); handleDeleteBlog(blog._id); }}
+                      className={`px-3 py-1 rounded bg-red-600 hover:bg-red-700 text-white text-xs font-semibold shadow border border-red-700`}
+                    >
+                      Delete
+                    </button>
+                  </div>
+                )}
               </div>
             ))
           )}
