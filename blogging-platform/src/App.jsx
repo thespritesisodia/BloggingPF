@@ -105,7 +105,7 @@ function App() {
   };
 
   return (
-    <div className={`min-h-screen w-full flex flex-col transition-colors relative ${dark ? 'bg-black text-white' : 'bg-white text-black'}`}>
+    <div className={`w-screen flex items-center justify-start transition-colors relative ${dark ? 'bg-black text-white' : 'bg-white text-black'}`}>
       {/* Top right: Admin controls */}
       <div className="absolute top-6 right-8 flex items-center space-x-2 z-50">
         {!isAdmin ? (
@@ -154,7 +154,7 @@ function App() {
         )}
       </div>
       {/* Main content */}
-      <div className="flex-1 flex flex-col items-center space-y-8 w-full mt-6">
+      <div className="flex flex-col items-center space-y-8 w-full mt-6">
         <div className="flex space-x-6 items-center">
           {/* Profile Button */}
           <a href={X_LINK} target="_blank" rel="noopener noreferrer" className="flex items-center hover:opacity-80">
@@ -168,6 +168,14 @@ function App() {
           >
             <span className="text-2xl font-bold">{dark ? 'L' : 'D'}</span>
           </button>
+        </div>
+        {/* About Me Section */}
+        <div className="max-w-xl w-full bg-opacity-60 rounded-lg p-6 mb-2 text-center border border-gray-700" style={{background: dark ? 'rgba(30,30,30,0.7)' : 'rgba(240,240,240,0.7)'}}>
+          <span className="text-2xl">📚☕</span>
+          <p className="text-base mt-2">
+            Hi, I’m Sprite Nestorial Sisodia, a passionate Full Stack Developer who loves building clean, modern UIs and crafting intuitive user experiences across the stack. Whether it’s frontend design or backend logic, I enjoy turning complex problems into simple, elegant solutions.<br/><br/>
+            When I'm not coding, you'll probably find me with a cup of coffee, exploring new tech, or just enjoying the perfect blend of Code and Coffee.
+          </p>
         </div>
         {/* Blog Publishing Form (admin only) */}
         {isAdmin && (
