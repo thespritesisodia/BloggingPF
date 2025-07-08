@@ -34,6 +34,7 @@ function App() {
   const [publishSuccess, setPublishSuccess] = useState('');
   const [selectedBlog, setSelectedBlog] = useState(null);
   const [dark, setDark] = useState(true); // Default to dark mode
+  const [showPassword, setShowPassword] = useState(false);
 
   // Fetch blogs from backend
   useEffect(() => {
@@ -145,13 +146,28 @@ function App() {
               <div className="absolute top-12 right-0 bg-gray-900 border border-gray-700 rounded shadow-lg p-4 w-64">
                 <form onSubmit={handleAdminLogin}>
                   <label className="block mb-2 text-sm font-semibold">Admin Password</label>
-                  <input
-                    type="password"
-                    className="w-full p-2 rounded border border-gray-600 bg-black text-white mb-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
-                    value={adminPassword}
-                    onChange={e => setAdminPassword(e.target.value)}
-                    placeholder="Enter password"
-                  />
+                  <div className="relative">
+                    <input
+                      type={showPassword ? "text" : "password"}
+                      className="w-full p-2 rounded border border-gray-600 bg-black text-white mb-2 focus:outline-none focus:ring-2 focus:ring-blue-400 pr-10"
+                      value={adminPassword}
+                      onChange={e => setAdminPassword(e.target.value)}
+                      placeholder="Enter password"
+                    />
+                    <button
+                      type="button"
+                      className="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-200 focus:outline-none"
+                      tabIndex={-1}
+                      onClick={() => setShowPassword(v => !v)}
+                      aria-label={showPassword ? "Hide password" : "Show password"}
+                    >
+                      {showPassword ? (
+                        <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.875 18.825A10.05 10.05 0 0112 19c-5.523 0-10-4.477-10-10 0-1.657.403-3.22 1.125-4.575m1.875-2.25A9.956 9.956 0 0112 3c5.523 0 10 4.477 10 10 0 1.657-.403 3.22-1.125 4.575m-1.875 2.25A9.956 9.956 0 0112 21c-5.523 0-10-4.477-10-10 0-1.657.403-3.22 1.125-4.575" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
+                      ) : (
+                        <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.477 0 8.268 2.943 9.542 7-.274.832-.642 1.624-1.09 2.354M15.54 15.54A5.978 5.978 0 0112 17c-3.314 0-6-2.686-6-6 0-.828.162-1.618.458-2.354" /></svg>
+                      )}
+                    </button>
+                  </div>
                   {loginError && <div className="text-red-500 text-sm mb-2">{loginError}</div>}
                   <button
                     type="submit"
@@ -225,7 +241,7 @@ function App() {
           </form>
         )}
         {/* Blog List (public) or Blog Detail */}
-        <div className="w-full max-w-xl mt-20">
+        <div className="w-full max-w-5xl mt-20">
           {selectedBlog ? (
             <div className={`p-8 rounded ${dark ? 'bg-gray-900 border-gray-700' : 'bg-gray-100 border-gray-300'} border shadow`}>
               <button
@@ -241,28 +257,38 @@ function App() {
           ) : blogs.length === 0 ? (
             <div className="text-gray-400 text-center text-lg">No blogs available</div>
           ) : (
-            blogs.map(blog => (
-              <div
-                key={blog._id}
-                className={`mb-8 p-6 rounded cursor-pointer transition hover:scale-[1.01] ${dark ? 'bg-gray-900 border-gray-700 hover:bg-gray-800' : 'bg-gray-100 border-gray-300 hover:bg-gray-200'} border shadow`}
-                onClick={() => setSelectedBlog(blog)}
-                title="Click to read more"
-              >
-                <div className={`text-xl font-bold mb-2 ${dark ? 'text-white' : 'text-black'}`}>{blog.title}</div>
-                <div className={`truncate mb-2 ${dark ? 'text-gray-300' : 'text-gray-800'}`}>{blog.content.length > 200 ? blog.content.slice(0, 200) + '...' : blog.content}</div>
-                <div className={`text-xs ${dark ? 'text-gray-500' : 'text-gray-600'}`}>{new Date(blog.createdAt).toLocaleString()}</div>
-                {isAdmin && (
-                  <div className="flex justify-center mt-2">
-                    <button
-                      onClick={e => { e.stopPropagation(); handleDeleteBlog(blog._id); }}
-                      className={`px-3 py-1 rounded bg-red-600 hover:bg-red-700 text-white text-xs font-semibold shadow border border-red-700`}
-                    >
-                      Delete
-                    </button>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+              {blogs.map(blog => (
+                <div
+                  key={blog._id}
+                  className={`flex flex-col justify-between h-full rounded-lg shadow-md border transition hover:scale-[1.02] cursor-pointer overflow-hidden ${dark ? 'bg-gray-900 border-gray-700 hover:bg-gray-800' : 'bg-white border-gray-200 hover:bg-gray-100'}`}
+                >
+                  {/* Placeholder image */}
+                  <div className="h-36 w-full bg-gradient-to-br from-blue-400 to-blue-200 flex items-center justify-center">
+                    <span className="text-4xl text-white opacity-60">📝</span>
                   </div>
-                )}
-              </div>
-            ))
+                  <div className="flex-1 flex flex-col p-5">
+                    <div className={`text-xl font-bold mb-2 ${dark ? 'text-white' : 'text-black'}`}>{blog.title}</div>
+                    <div className={`truncate mb-4 ${dark ? 'text-gray-300' : 'text-gray-800'}`}>{blog.content.length > 120 ? blog.content.slice(0, 120) + '...' : blog.content}</div>
+                    <div className={`text-xs mb-4 ${dark ? 'text-gray-500' : 'text-gray-600'}`}>{new Date(blog.createdAt).toLocaleString()}</div>
+                    <button
+                      onClick={() => setSelectedBlog(blog)}
+                      className="mt-auto px-4 py-2 rounded bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold shadow self-start"
+                    >
+                      Read More
+                    </button>
+                    {isAdmin && (
+                      <button
+                        onClick={e => { e.stopPropagation(); handleDeleteBlog(blog._id); }}
+                        className="mt-2 px-3 py-1 rounded bg-red-600 hover:bg-red-700 text-white text-xs font-semibold shadow border border-red-700 self-start"
+                      >
+                        Delete
+                      </button>
+                    )}
+                  </div>
+                </div>
+              ))}
+            </div>
           )}
         </div>
       </div>
