@@ -181,7 +181,7 @@ function App() {
           </>
         ) : (
           <>
-            <span className="font-semibold text-base">Sprite Nestorial Sisodia</span>
+            <strong className="bold-important">Sprite Nestorial Sisodia</strong>
             <button
               onClick={handleLogout}
               className="flex items-center space-x-2 bg-gray-800 hover:bg-gray-700 text-white px-3 py-2 rounded shadow border border-gray-700"
@@ -192,7 +192,7 @@ function App() {
         )}
       </div>
       {/* Main content */}
-      <div className="flex-1 flex flex-col items-center space-y-8 w-full mt-6">
+      <div className="flex-1 flex flex-col items-center space-y-8 w-full mt-6 mx-auto">
         <div className="flex space-x-6 items-center">
           {/* Profile Button */}
           <a href={X_LINK} target="_blank" rel="noopener noreferrer" className="flex items-center hover:opacity-80">
