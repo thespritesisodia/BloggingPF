@@ -128,7 +128,7 @@ function App() {
   };
 
   return (
-    <div className={`min-h-screen w-full flex flex-col transition-colors relative ${dark ? 'bg-black text-white' : 'bg-white text-black'}`}>
+    <div className={`min-h-screen flex items-center justify-center transition-colors relative ${dark ? 'bg-black text-white' : 'bg-white text-black'}`}>
       {/* Top right: Admin controls */}
       <div className="absolute top-6 right-8 flex items-center space-x-2 z-50">
         {!isAdmin ? (
@@ -192,109 +192,107 @@ function App() {
         )}
       </div>
       {/* Main content */}
-      <div className="flex-1 flex flex-col items-center space-y-8 mt-6">
-        <div className="w-full max-w-5xl mx-auto">
-          <div className="flex space-x-6 items-center">
-            {/* Profile Button */}
-            <a href={X_LINK} target="_blank" rel="noopener noreferrer" className="flex items-center hover:opacity-80">
-              <img src={PROFILE_IMG} alt="Profile" className="w-10 h-10 rounded-full border border-gray-700" />
-            </a>
-            {/* Theme Toggle Button */}
-            <button
-              onClick={() => setDark((d) => !d)}
-              className={`flex items-center justify-center w-10 h-10 rounded-full shadow transition-colors border ${dark ? 'bg-gray-800 text-white hover:bg-gray-700 border-gray-700' : 'bg-gray-200 text-black hover:bg-gray-300 border-gray-300'}`}
-              aria-label="Toggle theme"
-            >
-              <span className="text-2xl font-bold">{dark ? 'L' : 'D'}</span>
-            </button>
-          </div>
-          {/* About Me Section */}
-          <div className="max-w-xl w-full bg-opacity-60 rounded-lg p-6 mb-2 text-center border border-gray-700" style={{background: dark ? 'rgba(30,30,30,0.7)' : 'rgba(240,240,240,0.7)'}}>
-            <span className="text-2xl">📚☕</span>
-            <p className="text-base mt-2">
-              Hi, I’m Sprite Nestorial Sisodia, a passionate Full Stack Developer who loves building clean, modern UIs and crafting intuitive user experiences across the stack. Whether it’s frontend design or backend logic, I enjoy turning complex problems into simple, elegant solutions.<br/><br/>
-              When I'm not coding, you'll probably find me with a cup of coffee, exploring new tech, or just enjoying the perfect blend of Code and Coffee.
-            </p>
-          </div>
-          {/* Blog Publishing Form (admin only) */}
-          {isAdmin && (
-            <form className="w-2/3 flex flex-col space-y-2" onSubmit={handlePublish}>
-              <input
-                className="p-2 rounded border border-gray-700 bg-black text-white text-lg placeholder-gray-400 mb-2"
-                placeholder="Blog Title"
-                value={blogTitle}
-                onChange={e => setBlogTitle(e.target.value)}
-              />
-              <textarea
-                className="h-40 p-4 rounded border border-gray-700 bg-black text-white resize-none focus:outline-none focus:ring-2 focus:ring-blue-400 text-lg placeholder-gray-400 mb-2"
-                placeholder="Write your blog content..."
-                value={blogContent}
-                onChange={e => setBlogContent(e.target.value)}
-              />
-              {publishError && <div className="text-red-500 text-sm mb-2">{publishError}</div>}
-              {publishSuccess && <div className="text-green-500 text-sm mb-2">{publishSuccess}</div>}
+      <div className="w-full max-w-5xl mx-auto">
+        <div className="flex flex-col items-center space-y-8 mt-6">
+              {/* Profile Button */}
+              <a href={X_LINK} target="_blank" rel="noopener noreferrer" className="flex items-center hover:opacity-80">
+                <img src={PROFILE_IMG} alt="Profile" className="w-10 h-10 rounded-full border border-gray-700" />
+              </a>
+              {/* Theme Toggle Button */}
               <button
-                type="submit"
-                className="px-8 py-2 rounded bg-blue-600 hover:bg-blue-700 text-white font-semibold shadow transition-colors"
+                onClick={() => setDark((d) => !d)}
+                className={`flex items-center justify-center w-10 h-10 rounded-full shadow transition-colors border ${dark ? 'bg-gray-800 text-white hover:bg-gray-700 border-gray-700' : 'bg-gray-200 text-black hover:bg-gray-300 border-gray-300'}`}
+                aria-label="Toggle theme"
               >
-                Publish
+                <span className="text-2xl font-bold">{dark ? 'L' : 'D'}</span>
               </button>
-            </form>
-          )}
-          {/* Blog List (public) or Blog Detail */}
-          <div className="w-full max-w-5xl mt-20">
-            {selectedBlog ? (
-              <div className={`p-8 rounded ${dark ? 'bg-gray-900 border-gray-700' : 'bg-gray-100 border-gray-300'} border shadow`}>
+            </div>
+            {/* About Me Section */}
+            <div className="max-w-xl w-full bg-opacity-60 rounded-lg p-6 mb-2 text-center border border-gray-700" style={{background: dark ? 'rgba(30,30,30,0.7)' : 'rgba(240,240,240,0.7)'}}>
+              <span className="text-2xl">📚☕</span>
+              <p className="text-base mt-2">
+                Hi, I’m Sprite Nestorial Sisodia, a passionate Full Stack Developer who loves building clean, modern UIs and crafting intuitive user experiences across the stack. Whether it’s frontend design or backend logic, I enjoy turning complex problems into simple, elegant solutions.<br/><br/>
+                When I'm not coding, you'll probably find me with a cup of coffee, exploring new tech, or just enjoying the perfect blend of Code and Coffee.
+              </p>
+            </div>
+            {/* Blog Publishing Form (admin only) */}
+            {isAdmin && (
+              <form className="w-2/3 flex flex-col space-y-2" onSubmit={handlePublish}>
+                <input
+                  className="p-2 rounded border border-gray-700 bg-black text-white text-lg placeholder-gray-400 mb-2"
+                  placeholder="Blog Title"
+                  value={blogTitle}
+                  onChange={e => setBlogTitle(e.target.value)}
+                />
+                <textarea
+                  className="h-40 p-4 rounded border border-gray-700 bg-black text-white resize-none focus:outline-none focus:ring-2 focus:ring-blue-400 text-lg placeholder-gray-400 mb-2"
+                  placeholder="Write your blog content..."
+                  value={blogContent}
+                  onChange={e => setBlogContent(e.target.value)}
+                />
+                {publishError && <div className="text-red-500 text-sm mb-2">{publishError}</div>}
+                {publishSuccess && <div className="text-green-500 text-sm mb-2">{publishSuccess}</div>}
                 <button
-                  onClick={() => setSelectedBlog(null)}
-                  className="mb-6 px-4 py-1 rounded bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold shadow"
+                  type="submit"
+                  className="px-8 py-2 rounded bg-blue-600 hover:bg-blue-700 text-white font-semibold shadow transition-colors"
                 >
-                  ← Back to all blogs
+                  Publish
                 </button>
-                <div className={`text-3xl font-bold mb-4 ${dark ? 'text-white' : 'text-black'}`}>{selectedBlog.title}</div>
-                <div className={`mb-6 whitespace-pre-line text-lg ${dark ? 'text-gray-300' : 'text-gray-800'}`}>{selectedBlog.content}</div>
-                <div className={`text-xs ${dark ? 'text-gray-500' : 'text-gray-600'}`}>{new Date(selectedBlog.createdAt).toLocaleString()}</div>
-              </div>
-            ) : blogs.length === 0 ? (
-              <div className="text-gray-400 text-center text-lg">No blogs available</div>
-            ) : (
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-                {blogs.map(blog => (
-                  <div
-                    key={blog._id}
-                    className={`flex flex-col justify-between h-full rounded-lg shadow-md border transition hover:scale-[1.02] cursor-pointer overflow-hidden ${dark ? 'bg-gray-900 border-gray-700 hover:bg-gray-800' : 'bg-white border-gray-200 hover:bg-gray-100'}`}
-                  >
-                    {/* Placeholder image */}
-                    <div className="h-36 w-full bg-gradient-to-br from-blue-400 to-blue-200 flex items-center justify-center">
-                      <span className="text-4xl text-white opacity-60">📝</span>
-                    </div>
-                    <div className="flex-1 flex flex-col p-5">
-                      <div className={`text-xl font-bold mb-2 ${dark ? 'text-white' : 'text-black'}`}>{blog.title}</div>
-                      <div className={`truncate mb-4 ${dark ? 'text-gray-300' : 'text-gray-800'}`}>{blog.content.length > 120 ? blog.content.slice(0, 120) + '...' : blog.content}</div>
-                      <div className={`text-xs mb-4 ${dark ? 'text-gray-500' : 'text-gray-600'}`}>{new Date(blog.createdAt).toLocaleString()}</div>
-                      <button
-                        onClick={() => setSelectedBlog(blog)}
-                        className="mt-auto px-4 py-2 rounded bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold shadow self-start"
-                      >
-                        Read More
-                      </button>
-                      {isAdmin && (
-                        <button
-                          onClick={e => { e.stopPropagation(); handleDeleteBlog(blog._id); }}
-                          className="mt-2 px-3 py-1 rounded bg-red-600 hover:bg-red-700 text-white text-xs font-semibold shadow border border-red-700 self-start"
-                        >
-                          Delete
-                        </button>
-                      )}
-                    </div>
-                  </div>
-                ))}
-              </div>
+              </form>
             )}
+            {/* Blog List (public) or Blog Detail */}
+            <div className="w-full max-w-5xl mt-20">
+              {selectedBlog ? (
+                <div className={`p-8 rounded ${dark ? 'bg-gray-900 border-gray-700' : 'bg-gray-100 border-gray-300'} border shadow`}>
+                  <button
+                    onClick={() => setSelectedBlog(null)}
+                    className="mb-6 px-4 py-1 rounded bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold shadow"
+                  >
+                    ← Back to all blogs
+                  </button>
+                  <div className={`text-3xl font-bold mb-4 ${dark ? 'text-white' : 'text-black'}`}>{selectedBlog.title}</div>
+                  <div className={`mb-6 whitespace-pre-line text-lg ${dark ? 'text-gray-300' : 'text-gray-800'}`}>{selectedBlog.content}</div>
+                  <div className={`text-xs ${dark ? 'text-gray-500' : 'text-gray-600'}`}>{new Date(selectedBlog.createdAt).toLocaleString()}</div>
+                </div>
+              ) : blogs.length === 0 ? (
+                <div className="text-gray-400 text-center text-lg">No blogs available</div>
+              ) : (
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+                  {blogs.map(blog => (
+                    <div
+                      key={blog._id}
+                      className={`flex flex-col justify-between h-full rounded-lg shadow-md border transition hover:scale-[1.02] cursor-pointer overflow-hidden ${dark ? 'bg-gray-900 border-gray-700 hover:bg-gray-800' : 'bg-white border-gray-200 hover:bg-gray-100'}`}
+                    >
+                      {/* Placeholder image */}
+                      <div className="h-36 w-full bg-gradient-to-br from-blue-400 to-blue-200 flex items-center justify-center">
+                        <span className="text-4xl text-white opacity-60">📝</span>
+                      </div>
+                      <div className="flex-1 flex flex-col p-5">
+                        <div className={`text-xl font-bold mb-2 ${dark ? 'text-white' : 'text-black'}`}>{blog.title}</div>
+                        <div className={`truncate mb-4 ${dark ? 'text-gray-300' : 'text-gray-800'}`}>{blog.content.length > 120 ? blog.content.slice(0, 120) + '...' : blog.content}</div>
+                        <div className={`text-xs mb-4 ${dark ? 'text-gray-500' : 'text-gray-600'}`}>{new Date(blog.createdAt).toLocaleString()}</div>
+                        <button
+                          onClick={() => setSelectedBlog(blog)}
+                          className="mt-auto px-4 py-2 rounded bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold shadow self-start"
+                        >
+                          Read More
+                        </button>
+                        {isAdmin && (
+                          <button
+                            onClick={e => { e.stopPropagation(); handleDeleteBlog(blog._id); }}
+                            className="mt-2 px-3 py-1 rounded bg-red-600 hover:bg-red-700 text-white text-xs font-semibold shadow border border-red-700 self-start"
+                          >
+                            Delete
+                          </button>
+                        )}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
           </div>
         </div>
-      </div>
-    </div>
   );
 }
 
