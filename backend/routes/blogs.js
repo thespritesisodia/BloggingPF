@@ -41,4 +41,25 @@ router.delete('/:id', verifyAdmin, async (req, res) => {
   }
 });
 
+// Update a blog (admin only)
+router.put('/:id', verifyAdmin, async (req, res) => {
+  const { title, content } = req.body;
+  if (!title || !content) {
+    return res.status(400).json({ error: 'Title and content are required' });
+  }
+  try {
+    const updated = await Blog.findByIdAndUpdate(
+      req.params.id,
+      { title, content },
+      { new: true }
+    );
+    if (!updated) {
+      return res.status(404).json({ error: 'Blog not found' });
+    }
+    res.json(updated);
+  } catch (err) {
+    res.status(500).json({ error: 'Failed to update blog' });
+  }
+});
+
 module.exports = router; 
