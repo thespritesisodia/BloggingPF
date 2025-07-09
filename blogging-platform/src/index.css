@@ -28,8 +28,6 @@ a:hover {
 
 body {
   margin: 0;
-  display: flex;
-  place-items: center;
   min-width: 320px;
   min-height: 100vh;
 }
@@ -56,6 +54,12 @@ button:hover {
 button:focus,
 button:focus-visible {
   outline: 4px auto -webkit-focus-ring-color;
+}
+
+.bold-important {
+  font-weight: bold !important;
+  font-family: Arial Black, Arial, sans-serif !important;
+  font-size: 1.25rem !important;
 }
 
 @media (prefers-color-scheme: light) {
