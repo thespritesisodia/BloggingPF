@@ -218,7 +218,7 @@ function App() {
           </div>
           {/* Blog Publishing Form (admin only) */}
           {isAdmin && (
-            <form className="w-2/3 flex flex-col space-y-2" onSubmit={handlePublish}>
+            <form className="w-2/3 flex flex-col space-y-2 mx-auto" onSubmit={handlePublish}>
               <input
                 className="p-2 rounded border border-gray-700 bg-black text-white text-lg placeholder-gray-400 mb-2"
                 placeholder="Blog Title"
