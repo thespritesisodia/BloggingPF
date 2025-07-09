@@ -35,6 +35,11 @@ function App() {
   const [selectedBlog, setSelectedBlog] = useState(null);
   const [dark, setDark] = useState(true); // Default to dark mode
   const [showPassword, setShowPassword] = useState(false);
+  const [editingBlog, setEditingBlog] = useState(null);
+  const [editTitle, setEditTitle] = useState('');
+  const [editContent, setEditContent] = useState('');
+  const [editError, setEditError] = useState('');
+  const [editSuccess, setEditSuccess] = useState('');
 
   // Fetch blogs from backend
   useEffect(() => {
@@ -118,6 +123,40 @@ function App() {
       }
     } catch (err) {
       setPublishError('Failed to delete');
+    }
+  };
+
+  // Handle blog update (admin only)
+  const handleEditBlog = async (e) => {
+    e.preventDefault();
+    setEditError('');
+    setEditSuccess('');
+    if (!editTitle || !editContent) {
+      setEditError('Title and content are required');
+      return;
+    }
+    try {
+      const res = await fetch(`http://localhost:5050/api/blogs/${editingBlog._id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({ title: editTitle, content: editContent })
+      });
+      const data = await res.json();
+      if (res.ok) {
+        setEditSuccess('Blog updated!');
+        setEditingBlog(null);
+        setEditTitle('');
+        setEditContent('');
+        // Update blogs in state
+        setBlogs(blogs.map(b => b._id === data._id ? data : b));
+      } else {
+        setEditError(data.error || 'Failed to update');
+      }
+    } catch (err) {
+      setEditError('Failed to update');
     }
   };
 
@@ -279,14 +318,61 @@ function App() {
                         Read More
                       </button>
                       {isAdmin && (
-                        <button
-                          onClick={e => { e.stopPropagation(); handleDeleteBlog(blog._id); }}
-                          className="mt-2 px-3 py-1 rounded bg-red-600 hover:bg-red-700 text-white text-xs font-semibold shadow border border-red-700 self-start"
-                        >
-                          Delete
-                        </button>
+                        <div className="flex space-x-2 mt-2">
+                          <button
+                            onClick={e => { e.stopPropagation(); setEditingBlog(blog); setEditTitle(blog.title); setEditContent(blog.content); setEditError(''); setEditSuccess(''); }}
+                            className="px-3 py-1 rounded bg-yellow-500 hover:bg-yellow-600 text-white text-xs font-semibold shadow border border-yellow-600 self-start"
+                          >
+                            Edit
+                          </button>
+                          <button
+                            onClick={e => { e.stopPropagation(); handleDeleteBlog(blog._id); }}
+                            className="px-3 py-1 rounded bg-red-600 hover:bg-red-700 text-white text-xs font-semibold shadow border border-red-700 self-start"
+                          >
+                            Delete
+                          </button>
+                        </div>
                       )}
                     </div>
+                    {/* Edit form modal */}
+                    {editingBlog && editingBlog._id === blog._id && (
+                      <div className="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50">
+                        <div className={`w-full max-w-md p-6 rounded-lg shadow-lg border ${dark ? 'bg-gray-900 border-gray-700' : 'bg-white border-gray-300'}` }>
+                          <h2 className="text-xl font-bold mb-4">Edit Blog</h2>
+                          <form onSubmit={handleEditBlog} className="flex flex-col space-y-2">
+                            <input
+                              className="p-2 rounded border border-gray-700 bg-black text-white text-lg placeholder-gray-400 mb-2"
+                              placeholder="Blog Title"
+                              value={editTitle}
+                              onChange={e => setEditTitle(e.target.value)}
+                            />
+                            <textarea
+                              className="h-32 p-4 rounded border border-gray-700 bg-black text-white resize-none focus:outline-none focus:ring-2 focus:ring-blue-400 text-lg placeholder-gray-400 mb-2"
+                              placeholder="Write your blog content..."
+                              value={editContent}
+                              onChange={e => setEditContent(e.target.value)}
+                            />
+                            {editError && <div className="text-red-500 text-sm mb-2">{editError}</div>}
+                            {editSuccess && <div className="text-green-500 text-sm mb-2">{editSuccess}</div>}
+                            <div className="flex space-x-2">
+                              <button
+                                type="submit"
+                                className="px-6 py-2 rounded bg-blue-600 hover:bg-blue-700 text-white font-semibold shadow transition-colors"
+                              >
+                                Save
+                              </button>
+                              <button
+                                type="button"
+                                onClick={() => setEditingBlog(null)}
+                                className="px-6 py-2 rounded bg-gray-600 hover:bg-gray-700 text-white font-semibold shadow transition-colors"
+                              >
+                                Cancel
+                              </button>
+                            </div>
+                          </form>
+                        </div>
+                      </div>
+                    )}
                   </div>
                 ))}
               </div>
