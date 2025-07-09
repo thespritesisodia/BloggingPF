@@ -40,6 +40,9 @@ function App() {
   const [editContent, setEditContent] = useState('');
   const [editError, setEditError] = useState('');
   const [editSuccess, setEditSuccess] = useState('');
+  const [sections, setSections] = useState([
+    { type: 'text', content: '' }
+  ]);
 
   // Fetch blogs from backend
   useEffect(() => {
@@ -73,13 +76,31 @@ function App() {
     }
   };
 
-  // Handle blog publish
+  // Add section
+  const addSection = (type, idx) => {
+    const newSections = [...sections];
+    newSections.splice(idx + 1, 0, { type, content: '' });
+    setSections(newSections);
+  };
+  // Remove section
+  const removeSection = (idx) => {
+    if (sections.length === 1) return;
+    setSections(sections.filter((_, i) => i !== idx));
+  };
+  // Update section content
+  const updateSection = (idx, value) => {
+    const newSections = [...sections];
+    newSections[idx].content = value;
+    setSections(newSections);
+  };
+
+  // Handle blog publish (section-based)
   const handlePublish = async (e) => {
     e.preventDefault();
     setPublishError('');
     setPublishSuccess('');
-    if (!blogTitle || !blogContent) {
-      setPublishError('Title and content are required');
+    if (!blogTitle || !sections.length || sections.some(s => !s.content.trim())) {
+      setPublishError('Title and all sections are required');
       return;
     }
     try {
@@ -89,13 +110,13 @@ function App() {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${token}`
         },
-        body: JSON.stringify({ title: blogTitle, content: blogContent })
+        body: JSON.stringify({ title: blogTitle, sections })
       });
       const data = await res.json();
       if (res.ok) {
         setPublishSuccess('Blog published!');
         setBlogTitle('');
-        setBlogContent('');
+        setSections([{ type: 'text', content: '' }]);
       } else {
         setPublishError(data.error || 'Failed to publish');
       }
@@ -264,12 +285,31 @@ function App() {
                 value={blogTitle}
                 onChange={e => setBlogTitle(e.target.value)}
               />
-              <textarea
-                className="h-40 p-4 rounded border border-gray-700 bg-black text-white resize-none focus:outline-none focus:ring-2 focus:ring-blue-400 text-lg placeholder-gray-400 mb-2"
-                placeholder="Write your blog content..."
-                value={blogContent}
-                onChange={e => setBlogContent(e.target.value)}
-              />
+              {sections.map((section, idx) => (
+                <div key={idx} className="relative mb-2">
+                  {section.type === 'text' ? (
+                    <textarea
+                      className="w-full h-24 p-2 rounded border border-gray-700 bg-black text-white resize-none focus:outline-none focus:ring-2 focus:ring-blue-400 text-lg placeholder-gray-400"
+                      placeholder="Write your blog text..."
+                      value={section.content}
+                      onChange={e => updateSection(idx, e.target.value)}
+                    />
+                  ) : (
+                    <textarea
+                      className="w-full h-24 p-2 rounded border border-blue-700 bg-gray-900 text-blue-200 font-mono resize-none focus:outline-none focus:ring-2 focus:ring-blue-400 text-base placeholder-blue-400"
+                      placeholder="Write your code snippet..."
+                      value={section.content}
+                      onChange={e => updateSection(idx, e.target.value)}
+                      spellCheck={false}
+                    />
+                  )}
+                  <div className="absolute top-2 right-2 flex space-x-1">
+                    <button type="button" onClick={() => addSection('code', idx)} title="Add code block" className="px-2 py-1 bg-blue-700 text-white rounded text-xs">{'</>'}</button>
+                    <button type="button" onClick={() => addSection('text', idx)} title="Add text block" className="px-2 py-1 bg-gray-700 text-white rounded text-xs">T</button>
+                    <button type="button" onClick={() => removeSection(idx)} title="Remove section" className="px-2 py-1 bg-red-700 text-white rounded text-xs">✕</button>
+                  </div>
+                </div>
+              ))}
               {publishError && <div className="text-red-500 text-sm mb-2">{publishError}</div>}
               {publishSuccess && <div className="text-green-500 text-sm mb-2">{publishSuccess}</div>}
               <button
