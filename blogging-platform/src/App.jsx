@@ -294,7 +294,7 @@ function App() {
                       value={section.content}
                       onChange={e => updateSection(idx, e.target.value)}
                     />
-                  ) : (
+                  ) : section.type === 'code' ? (
                     <textarea
                       className="w-full h-24 p-2 rounded border border-blue-700 bg-gray-900 text-blue-200 font-mono resize-none focus:outline-none focus:ring-2 focus:ring-blue-400 text-base placeholder-blue-400"
                       placeholder="Write your code snippet..."
@@ -302,10 +302,27 @@ function App() {
                       onChange={e => updateSection(idx, e.target.value)}
                       spellCheck={false}
                     />
-                  )}
+                  ) : section.type === 'heading' ? (
+                    <input
+                      className="w-full p-2 rounded border border-green-700 bg-black text-green-300 text-2xl font-bold focus:outline-none focus:ring-2 focus:ring-green-400 mb-2"
+                      placeholder="Heading..."
+                      value={section.content}
+                      onChange={e => updateSection(idx, e.target.value)}
+                    />
+                  ) : section.type === 'image' ? (
+                    <input
+                      className="w-full p-2 rounded border border-purple-700 bg-black text-purple-300 focus:outline-none focus:ring-2 focus:ring-purple-400 mb-2"
+                      placeholder="Image URL..."
+                      value={section.content}
+                      onChange={e => updateSection(idx, e.target.value)}
+                      type="url"
+                    />
+                  ) : null}
                   <div className="absolute top-2 right-2 flex space-x-1">
                     <button type="button" onClick={() => addSection('code', idx)} title="Add code block" className="px-2 py-1 bg-blue-700 text-white rounded text-xs">{'</>'}</button>
                     <button type="button" onClick={() => addSection('text', idx)} title="Add text block" className="px-2 py-1 bg-gray-700 text-white rounded text-xs">T</button>
+                    <button type="button" onClick={() => addSection('heading', idx)} title="Add heading" className="px-2 py-1 bg-green-700 text-white rounded text-xs font-bold">H</button>
+                    <button type="button" onClick={() => addSection('image', idx)} title="Add image" className="px-2 py-1 bg-purple-700 text-white rounded text-xs">🖼️</button>
                     <button type="button" onClick={() => removeSection(idx)} title="Remove section" className="px-2 py-1 bg-red-700 text-white rounded text-xs">✕</button>
                   </div>
                 </div>
