@@ -73,4 +73,19 @@ router.put('/:id', verifyAdmin, async (req, res) => {
   }
 });
 
+// Like a blog (public)
+router.post('/:id/like', async (req, res) => {
+  try {
+    const blog = await Blog.findById(req.params.id);
+    if (!blog) {
+      return res.status(404).json({ error: 'Blog not found' });
+    }
+    blog.likes = (blog.likes || 0) + 1;
+    await blog.save();
+    res.json({ likes: blog.likes });
+  } catch (err) {
+    res.status(500).json({ error: 'Failed to like blog' });
+  }
+});
+
 module.exports = router; 
