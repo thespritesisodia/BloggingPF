@@ -433,8 +433,19 @@ function App() {
                     onClick={() => handleLike(selectedBlog._id)}
                     className={`flex items-center space-x-2 text-red-500 hover:text-red-600 transition-colors ${hasUserLiked(selectedBlog._id) ? 'opacity-70' : ''}`}
                   >
-                    <svg className="w-6 h-6" fill={hasUserLiked(selectedBlog._id) ? "currentColor" : "none"} viewBox="0 0 20 20">
-                      <path fillRule="evenodd" d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" clipRule="evenodd" />
+                    <svg
+                      className="w-6 h-6 drop-shadow"
+                      fill={hasUserLiked(selectedBlog._id) ? "currentColor" : "none"}
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      viewBox="0 0 20 20"
+                      style={{ filter: !hasUserLiked(selectedBlog._id) ? 'drop-shadow(0 0 2px #f87171)' : '' }}
+                    >
+                      <path
+                        fillRule="evenodd"
+                        d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z"
+                        clipRule="evenodd"
+                      />
                     </svg>
                     <span className="text-lg font-semibold">{selectedBlog.likes || 0}</span>
                   </button>
@@ -501,8 +512,19 @@ function App() {
                           onClick={(e) => { e.stopPropagation(); handleLike(blog._id); }}
                           className={`flex items-center space-x-1 text-red-500 hover:text-red-600 transition-colors ${hasUserLiked(blog._id) ? 'opacity-70' : ''}`}
                         >
-                          <svg className="w-5 h-5" fill={hasUserLiked(blog._id) ? "currentColor" : "none"} viewBox="0 0 20 20">
-                            <path fillRule="evenodd" d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" clipRule="evenodd" />
+                          <svg
+                            className="w-5 h-5 drop-shadow"
+                            fill={hasUserLiked(blog._id) ? "currentColor" : "none"}
+                            stroke="currentColor"
+                            strokeWidth="2"
+                            viewBox="0 0 20 20"
+                            style={{ filter: !hasUserLiked(blog._id) ? 'drop-shadow(0 0 2px #f87171)' : '' }}
+                          >
+                            <path
+                              fillRule="evenodd"
+                              d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z"
+                              clipRule="evenodd"
+                            />
                           </svg>
                           <span className="text-sm font-semibold">{blog.likes || 0}</span>
                         </button>
