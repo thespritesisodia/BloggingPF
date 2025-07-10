@@ -187,6 +187,29 @@ function App() {
     setToken('');
   };
 
+  // Upload image handler
+  const handleImageUpload = async (file, idx) => {
+    const formData = new FormData();
+    formData.append('image', file);
+    try {
+      const res = await fetch('http://localhost:5050/api/blogs/upload', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`
+        },
+        body: formData
+      });
+      const data = await res.json();
+      if (res.ok && data.url) {
+        updateSection(idx, data.url);
+      } else {
+        alert(data.error || 'Failed to upload image');
+      }
+    } catch (err) {
+      alert('Failed to upload image');
+    }
+  };
+
   return (
     <div className={`min-h-screen w-full flex flex-col transition-colors relative ${dark ? 'bg-black text-white' : 'bg-white text-black'}`}>
       {/* Top right: Admin controls */}
@@ -269,13 +292,15 @@ function App() {
             </button>
           </div>
           {/* About Me Section */}
-          <div className="max-w-xl w-full bg-opacity-60 rounded-lg p-6 mb-2 text-center border border-gray-700 mx-auto" style={{background: dark ? 'rgba(30,30,30,0.7)' : 'rgba(240,240,240,0.7)'}}>
-            <span className="text-2xl">📚☕</span>
-            <p className="text-base mt-2">
-              Hi, I’m Sprite Nestorial Sisodia, a passionate Full Stack Developer who loves building clean, modern UIs and crafting intuitive user experiences across the stack. Whether it’s frontend design or backend logic, I enjoy turning complex problems into simple, elegant solutions.<br/><br/>
-              When I'm not coding, you'll probably find me with a cup of coffee, exploring new tech, or just enjoying the perfect blend of Code and Coffee.
-            </p>
-          </div>
+          {!isAdmin && (
+            <div className="max-w-xl w-full bg-opacity-60 rounded-lg p-6 mb-2 text-center border border-gray-700 mx-auto" style={{background: dark ? 'rgba(30,30,30,0.7)' : 'rgba(240,240,240,0.7)'}}>
+              <span className="text-2xl">📚☕</span>
+              <p className="text-base mt-2">
+                Hi, I’m Sprite Nestorial Sisodia, a passionate Full Stack Developer who loves building clean, modern UIs and crafting intuitive user experiences across the stack. Whether it’s frontend design or backend logic, I enjoy turning complex problems into simple, elegant solutions.<br/><br/>
+                When I'm not coding, you'll probably find me with a cup of coffee, exploring new tech, or just enjoying the perfect blend of Code and Coffee.
+              </p>
+            </div>
+          )}
           {/* Blog Publishing Form (admin only) */}
           {isAdmin && (
             <form className="w-2/3 flex flex-col space-y-2 mx-auto" onSubmit={handlePublish}>
@@ -310,13 +335,28 @@ function App() {
                       onChange={e => updateSection(idx, e.target.value)}
                     />
                   ) : section.type === 'image' ? (
-                    <input
-                      className="w-full p-2 rounded border border-purple-700 bg-black text-purple-300 focus:outline-none focus:ring-2 focus:ring-purple-400 mb-2"
-                      placeholder="Image URL..."
-                      value={section.content}
-                      onChange={e => updateSection(idx, e.target.value)}
-                      type="url"
-                    />
+                    <div className="flex flex-col gap-2">
+                      <input
+                        className="w-full p-2 rounded border border-purple-700 bg-black text-purple-300 focus:outline-none focus:ring-2 focus:ring-purple-400 mb-2"
+                        placeholder="Image URL..."
+                        value={section.content}
+                        onChange={e => updateSection(idx, e.target.value)}
+                        type="url"
+                      />
+                      <input
+                        type="file"
+                        accept="image/*"
+                        className="w-full text-sm text-gray-400 file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:text-sm file:font-semibold file:bg-purple-700 file:text-white hover:file:bg-purple-800"
+                        onChange={e => {
+                          if (e.target.files && e.target.files[0]) {
+                            handleImageUpload(e.target.files[0], idx);
+                          }
+                        }}
+                      />
+                      {section.content && (
+                        <img src={section.content} alt="Preview" className="max-h-40 rounded border border-purple-700 mt-2 mx-auto" />
+                      )}
+                    </div>
                   ) : null}
                   <div className="absolute top-2 right-2 flex space-x-1">
                     <button type="button" onClick={() => addSection('code', idx)} title="Add code block" className="px-2 py-1 bg-blue-700 text-white rounded text-xs">{'</>'}</button>

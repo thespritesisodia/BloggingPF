@@ -9,6 +9,8 @@ const JWT_SECRET = process.env.JWT_SECRET;
 // For now, store password in plain text (bcrypt can be added later)
 router.post('/login', async (req, res) => {
   const { password } = req.body;
+  console.log('Received password:', password);
+  console.log('Expected password:', ADMIN_PASSWORD);
   if (!password) {
     return res.status(400).json({ error: 'Password required' });
   }

@@ -15,12 +15,18 @@ router.get('/', async (req, res) => {
 
 // Create a new blog (admin only)
 router.post('/', verifyAdmin, async (req, res) => {
-  const { title, content } = req.body;
-  if (!title || !content) {
-    return res.status(400).json({ error: 'Title and content are required' });
+  const { title, sections } = req.body;
+  if (!title || !Array.isArray(sections) || sections.length === 0) {
+    return res.status(400).json({ error: 'Title and sections are required' });
+  }
+  // Validate each section
+  for (const section of sections) {
+    if (!section.type || !section.content || !['text', 'code', 'heading', 'image'].includes(section.type)) {
+      return res.status(400).json({ error: 'Each section must have type (text/code) and content' });
+    }
   }
   try {
-    const newBlog = new Blog({ title, content });
+    const newBlog = new Blog({ title, sections });
     await newBlog.save();
     res.status(201).json(newBlog);
   } catch (err) {
@@ -43,14 +49,19 @@ router.delete('/:id', verifyAdmin, async (req, res) => {
 
 // Update a blog (admin only)
 router.put('/:id', verifyAdmin, async (req, res) => {
-  const { title, content } = req.body;
-  if (!title || !content) {
-    return res.status(400).json({ error: 'Title and content are required' });
+  const { title, sections } = req.body;
+  if (!title || !Array.isArray(sections) || sections.length === 0) {
+    return res.status(400).json({ error: 'Title and sections are required' });
+  }
+  for (const section of sections) {
+    if (!section.type || !section.content || !['text', 'code', 'heading', 'image'].includes(section.type)) {
+      return res.status(400).json({ error: 'Each section must have type (text/code) and content' });
+    }
   }
   try {
     const updated = await Blog.findByIdAndUpdate(
       req.params.id,
-      { title, content },
+      { title, sections },
       { new: true }
     );
     if (!updated) {
