@@ -181,6 +181,46 @@ function App() {
     }
   };
 
+  // Check if user has liked a blog
+  const hasUserLiked = (blogId) => {
+    const likedBlogs = JSON.parse(localStorage.getItem('likedBlogs') || '[]');
+    return likedBlogs.includes(blogId);
+  };
+
+  // Handle blog like
+  const handleLike = async (blogId) => {
+    // Check if user has already liked this blog
+    const likedBlogs = JSON.parse(localStorage.getItem('likedBlogs') || '[]');
+    if (likedBlogs.includes(blogId)) {
+      alert('You have already liked this blog!');
+      return;
+    }
+
+    try {
+      const res = await fetch(`http://localhost:5050/api/blogs/${blogId}/like`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' }
+      });
+      const data = await res.json();
+      if (res.ok) {
+        // Add blog to liked blogs in localStorage
+        likedBlogs.push(blogId);
+        localStorage.setItem('likedBlogs', JSON.stringify(likedBlogs));
+        
+        // Update the blog's likes count in real-time
+        setBlogs(blogs.map(blog => 
+          blog._id === blogId ? { ...blog, likes: data.likes } : blog
+        ));
+        // Also update selectedBlog if it's the same blog
+        if (selectedBlog && selectedBlog._id === blogId) {
+          setSelectedBlog({ ...selectedBlog, likes: data.likes });
+        }
+      }
+    } catch (err) {
+      console.error('Failed to like blog:', err);
+    }
+  };
+
   // Handle logout
   const handleLogout = () => {
     setIsAdmin(false);
@@ -388,7 +428,37 @@ function App() {
                   ← Back to all blogs
                 </button>
                 <div className={`text-3xl font-bold mb-4 uppercase ${dark ? 'text-white' : 'text-black'}`}>{selectedBlog.title}</div>
-                <div className={`mb-6 whitespace-pre-line text-lg ${dark ? 'text-gray-300' : 'text-gray-800'}`}>{selectedBlog.content}</div>
+                <div className="flex items-center space-x-4 mb-4">
+                  <button
+                    onClick={() => handleLike(selectedBlog._id)}
+                    className={`flex items-center space-x-2 text-red-500 hover:text-red-600 transition-colors ${hasUserLiked(selectedBlog._id) ? 'opacity-70' : ''}`}
+                  >
+                    <svg className="w-6 h-6" fill={hasUserLiked(selectedBlog._id) ? "currentColor" : "none"} viewBox="0 0 20 20">
+                      <path fillRule="evenodd" d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" clipRule="evenodd" />
+                    </svg>
+                    <span className="text-lg font-semibold">{selectedBlog.likes || 0}</span>
+                  </button>
+                </div>
+                <div className={`mb-6 ${dark ? 'text-gray-300' : 'text-gray-800'}`}>
+                  {selectedBlog.sections && selectedBlog.sections.map((section, idx) => (
+                    <div key={idx} className="mb-4">
+                      {section.type === 'text' && (
+                        <div className="text-lg whitespace-pre-line">{section.content}</div>
+                      )}
+                      {section.type === 'heading' && (
+                        <div className="text-2xl font-bold mb-2">{section.content}</div>
+                      )}
+                      {section.type === 'code' && (
+                        <pre className="bg-gray-800 text-blue-200 p-4 rounded font-mono text-sm overflow-x-auto">{section.content}</pre>
+                      )}
+                      {section.type === 'image' && (
+                        <div className="text-center">
+                          <img src={section.content} alt="Blog image" className="max-w-full h-auto rounded" />
+                        </div>
+                      )}
+                    </div>
+                  ))}
+                </div>
                 <div className={`text-xs ${dark ? 'text-gray-500' : 'text-gray-600'}`}>{new Date(selectedBlog.createdAt).toLocaleString()}</div>
               </div>
             ) : blogs.length === 0 ? (
@@ -407,17 +477,36 @@ function App() {
                     <div className="flex-1 flex flex-col p-5">
                       <div className={`text-xl font-bold mb-2 uppercase ${dark ? 'text-white' : 'text-black'}`}>{blog.title}</div>
                       <div className={`truncate mb-4 ${dark ? 'text-gray-300' : 'text-gray-800'}`}>
-                        {blog.content && blog.content.length > 120
-                          ? blog.content.slice(0, 120) + '...'
-                          : blog.content || ''}
+                        {blog.sections && blog.sections.length > 0 ? (
+                          (() => {
+                            const firstTextSection = blog.sections.find(s => s.type === 'text');
+                            if (firstTextSection && firstTextSection.content) {
+                              return firstTextSection.content.length > 120
+                                ? firstTextSection.content.slice(0, 120) + '...'
+                                : firstTextSection.content;
+                            }
+                            return 'No content available';
+                          })()
+                        ) : 'No content available'}
                       </div>
                       <div className={`text-xs mb-4 ${dark ? 'text-gray-500' : 'text-gray-600'}`}>{new Date(blog.createdAt).toLocaleString()}</div>
-                      <button
-                        onClick={() => setSelectedBlog(blog)}
-                        className="mt-auto px-4 py-2 rounded bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold shadow self-start"
-                      >
-                        Read More
-                      </button>
+                      <div className="flex items-center justify-between mt-auto">
+                        <button
+                          onClick={() => setSelectedBlog(blog)}
+                          className="px-4 py-2 rounded bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold shadow"
+                        >
+                          Read More
+                        </button>
+                        <button
+                          onClick={(e) => { e.stopPropagation(); handleLike(blog._id); }}
+                          className={`flex items-center space-x-1 text-red-500 hover:text-red-600 transition-colors ${hasUserLiked(blog._id) ? 'opacity-70' : ''}`}
+                        >
+                          <svg className="w-5 h-5" fill={hasUserLiked(blog._id) ? "currentColor" : "none"} viewBox="0 0 20 20">
+                            <path fillRule="evenodd" d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" clipRule="evenodd" />
+                          </svg>
+                          <span className="text-sm font-semibold">{blog.likes || 0}</span>
+                        </button>
+                      </div>
                       {isAdmin && (
                         <div className="flex space-x-2 mt-2">
                           <button
