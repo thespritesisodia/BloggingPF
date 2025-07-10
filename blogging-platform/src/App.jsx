@@ -387,7 +387,7 @@ function App() {
                 >
                   ← Back to all blogs
                 </button>
-                <div className={`text-3xl font-bold mb-4 ${dark ? 'text-white' : 'text-black'}`}>{selectedBlog.title}</div>
+                <div className={`text-3xl font-bold mb-4 uppercase ${dark ? 'text-white' : 'text-black'}`}>{selectedBlog.title}</div>
                 <div className={`mb-6 whitespace-pre-line text-lg ${dark ? 'text-gray-300' : 'text-gray-800'}`}>{selectedBlog.content}</div>
                 <div className={`text-xs ${dark ? 'text-gray-500' : 'text-gray-600'}`}>{new Date(selectedBlog.createdAt).toLocaleString()}</div>
               </div>
@@ -405,8 +405,12 @@ function App() {
                       <span className="text-4xl text-white opacity-60">📝</span>
                     </div>
                     <div className="flex-1 flex flex-col p-5">
-                      <div className={`text-xl font-bold mb-2 ${dark ? 'text-white' : 'text-black'}`}>{blog.title}</div>
-                      <div className={`truncate mb-4 ${dark ? 'text-gray-300' : 'text-gray-800'}`}>{blog.content.length > 120 ? blog.content.slice(0, 120) + '...' : blog.content}</div>
+                      <div className={`text-xl font-bold mb-2 uppercase ${dark ? 'text-white' : 'text-black'}`}>{blog.title}</div>
+                      <div className={`truncate mb-4 ${dark ? 'text-gray-300' : 'text-gray-800'}`}>
+                        {blog.content && blog.content.length > 120
+                          ? blog.content.slice(0, 120) + '...'
+                          : blog.content || ''}
+                      </div>
                       <div className={`text-xs mb-4 ${dark ? 'text-gray-500' : 'text-gray-600'}`}>{new Date(blog.createdAt).toLocaleString()}</div>
                       <button
                         onClick={() => setSelectedBlog(blog)}
