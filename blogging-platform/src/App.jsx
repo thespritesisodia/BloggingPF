@@ -253,7 +253,7 @@ function App() {
   return (
     <div className={`min-h-screen w-full flex flex-col transition-colors relative ${dark ? 'bg-black text-white' : 'bg-white text-black'}`}>
       {/* Top right: Admin controls */}
-      <div className="absolute top-6 right-8 flex items-center space-x-2 z-50">
+      <div className="fixed top-4 right-4 flex items-center space-x-2 z-50 sm:absolute sm:top-6 sm:right-8">
         {!isAdmin ? (
           <>
             <button
@@ -315,9 +315,9 @@ function App() {
         )}
       </div>
       {/* Main content */}
-      <div className="flex-1 flex flex-col items-center space-y-8 w-full mt-6">
+      <div className="flex-1 flex flex-col items-center space-y-8 w-full mt-4 sm:mt-6 px-2 sm:px-0">
         <div className="w-full max-w-5xl mx-auto">
-          <div className="flex items-center justify-center space-x-6 mb-8">
+          <div className="flex flex-col sm:flex-row items-center justify-center space-y-4 sm:space-y-0 sm:space-x-6 mb-8">
             {/* Profile Button */}
             <a href={X_LINK} target="_blank" rel="noopener noreferrer" className="flex items-center hover:opacity-80">
               <img src={PROFILE_IMG} alt="Profile" className="w-10 h-10 rounded-full border border-gray-700" />
@@ -333,7 +333,7 @@ function App() {
           </div>
           {/* About Me Section */}
           {!isAdmin && (
-            <div className="max-w-xl w-full bg-opacity-60 rounded-lg p-6 mb-2 text-center border border-gray-700 mx-auto" style={{background: dark ? 'rgba(30,30,30,0.7)' : 'rgba(240,240,240,0.7)'}}>
+            <div className="max-w-xl w-full bg-opacity-60 rounded-lg p-4 sm:p-6 mb-2 text-center border border-gray-700 mx-auto text-sm sm:text-base" style={{background: dark ? 'rgba(30,30,30,0.7)' : 'rgba(240,240,240,0.7)'}}>
               <span className="text-2xl">📚☕</span>
               <p className="text-base mt-2">
                 Hi, I’m Sprite Nestorial Sisodia, a passionate Full Stack Developer who loves building clean, modern UIs and crafting intuitive user experiences across the stack. Whether it’s frontend design or backend logic, I enjoy turning complex problems into simple, elegant solutions.<br/><br/>
@@ -343,9 +343,9 @@ function App() {
           )}
           {/* Blog Publishing Form (admin only) */}
           {isAdmin && (
-            <form className="w-2/3 flex flex-col space-y-2 mx-auto" onSubmit={handlePublish}>
+            <form className="w-full sm:w-2/3 flex flex-col space-y-2 mx-auto" onSubmit={handlePublish}>
               <input
-                className="p-2 rounded border border-gray-700 bg-black text-white text-lg placeholder-gray-400 mb-2"
+                className="p-2 rounded border border-gray-700 bg-black text-white text-lg placeholder-gray-400 mb-2 w-full"
                 placeholder="Blog Title"
                 value={blogTitle}
                 onChange={e => setBlogTitle(e.target.value)}
@@ -411,23 +411,23 @@ function App() {
               {publishSuccess && <div className="text-green-500 text-sm mb-2">{publishSuccess}</div>}
               <button
                 type="submit"
-                className="px-8 py-2 rounded bg-blue-600 hover:bg-blue-700 text-white font-semibold shadow transition-colors"
+                className="px-6 py-2 sm:px-8 rounded bg-blue-600 hover:bg-blue-700 text-white font-semibold shadow transition-colors w-full sm:w-auto"
               >
                 Publish
               </button>
             </form>
           )}
           {/* Blog List (public) or Blog Detail */}
-          <div className="w-full max-w-5xl mt-20">
+          <div className="w-full max-w-5xl mt-8 sm:mt-20">
             {selectedBlog ? (
-              <div className={`p-8 rounded ${dark ? 'bg-gray-900 border-gray-700' : 'bg-gray-100 border-gray-300'} border shadow`}>
+              <div className={`p-4 sm:p-8 rounded ${dark ? 'bg-gray-900 border-gray-700' : 'bg-gray-100 border-gray-300'} border shadow`}>
                 <button
                   onClick={() => setSelectedBlog(null)}
-                  className="mb-6 px-4 py-1 rounded bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold shadow"
+                  className="mb-4 sm:mb-6 px-4 py-1 rounded bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold shadow w-full sm:w-auto"
                 >
                   ← Back to all blogs
                 </button>
-                <div className={`text-3xl font-bold mb-4 uppercase ${dark ? 'text-white' : 'text-black'}`}>{selectedBlog.title}</div>
+                <div className={`text-2xl sm:text-3xl font-bold mb-4 uppercase ${dark ? 'text-white' : 'text-black'}`}>{selectedBlog.title}</div>
                 <div className="flex items-center space-x-4 mb-4">
                   <button
                     onClick={() => handleLike(selectedBlog._id)}
@@ -450,7 +450,7 @@ function App() {
                     <span className="text-lg font-semibold">{selectedBlog.likes || 0}</span>
                   </button>
                 </div>
-                <div className={`mb-6 ${dark ? 'text-gray-300' : 'text-gray-800'}`}>
+                <div className={`mb-6 ${dark ? 'text-gray-300' : 'text-gray-800'} text-base sm:text-lg`}>
                   {selectedBlog.sections && selectedBlog.sections.map((section, idx) => (
                     <div key={idx} className="mb-4">
                       {section.type === 'text' && (
@@ -475,19 +475,19 @@ function App() {
             ) : blogs.length === 0 ? (
               <div className="text-gray-400 text-center text-lg">No blogs available</div>
             ) : (
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-8">
                 {blogs.map(blog => (
                   <div
                     key={blog._id}
                     className={`flex flex-col justify-between h-full rounded-lg shadow-md border transition hover:scale-[1.02] cursor-pointer overflow-hidden ${dark ? 'bg-gray-900 border-gray-700 hover:bg-gray-800' : 'bg-white border-gray-200 hover:bg-gray-100'}`}
                   >
                     {/* Placeholder image */}
-                    <div className="h-36 w-full bg-gradient-to-br from-blue-400 to-blue-200 flex items-center justify-center">
-                      <span className="text-4xl text-white opacity-60">📝</span>
+                    <div className="h-28 sm:h-36 w-full bg-gradient-to-br from-blue-400 to-blue-200 flex items-center justify-center">
+                      <span className="text-3xl sm:text-4xl text-white opacity-60">📝</span>
                     </div>
-                    <div className="flex-1 flex flex-col p-5">
-                      <div className={`text-xl font-bold mb-2 uppercase ${dark ? 'text-white' : 'text-black'}`}>{blog.title}</div>
-                      <div className={`truncate mb-4 ${dark ? 'text-gray-300' : 'text-gray-800'}`}>
+                    <div className="flex-1 flex flex-col p-3 sm:p-5">
+                      <div className={`text-lg sm:text-xl font-bold mb-2 uppercase ${dark ? 'text-white' : 'text-black'}`}>{blog.title}</div>
+                      <div className={`truncate mb-4 ${dark ? 'text-gray-300' : 'text-gray-800'} text-sm sm:text-base`}>
                         {blog.sections && blog.sections.length > 0 ? (
                           (() => {
                             const firstTextSection = blog.sections.find(s => s.type === 'text');
@@ -501,10 +501,10 @@ function App() {
                         ) : 'No content available'}
                       </div>
                       <div className={`text-xs mb-4 ${dark ? 'text-gray-500' : 'text-gray-600'}`}>{new Date(blog.createdAt).toLocaleString()}</div>
-                      <div className="flex items-center justify-between mt-auto">
+                      <div className="flex flex-col sm:flex-row items-center justify-between mt-auto space-y-2 sm:space-y-0">
                         <button
                           onClick={() => setSelectedBlog(blog)}
-                          className="px-4 py-2 rounded bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold shadow"
+                          className="px-4 py-2 rounded bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold shadow w-full sm:w-auto"
                         >
                           Read More
                         </button>
@@ -530,16 +530,16 @@ function App() {
                         </button>
                       </div>
                       {isAdmin && (
-                        <div className="flex space-x-2 mt-2">
+                        <div className="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-2 mt-2">
                           <button
                             onClick={e => { e.stopPropagation(); setEditingBlog(blog); setEditTitle(blog.title); setEditContent(blog.content); setEditError(''); setEditSuccess(''); }}
-                            className="px-3 py-1 rounded bg-yellow-500 hover:bg-yellow-600 text-white text-xs font-semibold shadow border border-yellow-600 self-start"
+                            className="px-3 py-1 rounded bg-yellow-500 hover:bg-yellow-600 text-white text-xs font-semibold shadow border border-yellow-600 self-start w-full sm:w-auto"
                           >
                             Edit
                           </button>
                           <button
                             onClick={e => { e.stopPropagation(); handleDeleteBlog(blog._id); }}
-                            className="px-3 py-1 rounded bg-red-600 hover:bg-red-700 text-white text-xs font-semibold shadow border border-red-700 self-start"
+                            className="px-3 py-1 rounded bg-red-600 hover:bg-red-700 text-white text-xs font-semibold shadow border border-red-700 self-start w-full sm:w-auto"
                           >
                             Delete
                           </button>
@@ -548,35 +548,35 @@ function App() {
                     </div>
                     {/* Edit form modal */}
                     {editingBlog && editingBlog._id === blog._id && (
-                      <div className="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50">
-                        <div className={`w-full max-w-md p-6 rounded-lg shadow-lg border ${dark ? 'bg-gray-900 border-gray-700' : 'bg-white border-gray-300'}` }>
-                          <h2 className="text-xl font-bold mb-4">Edit Blog</h2>
+                      <div className="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50 px-2">
+                        <div className={`w-full max-w-md p-4 sm:p-6 rounded-lg shadow-lg border ${dark ? 'bg-gray-900 border-gray-700' : 'bg-white border-gray-300'}` }>
+                          <h2 className="text-lg sm:text-xl font-bold mb-4">Edit Blog</h2>
                           <form onSubmit={handleEditBlog} className="flex flex-col space-y-2">
                             <input
-                              className="p-2 rounded border border-gray-700 bg-black text-white text-lg placeholder-gray-400 mb-2"
+                              className="p-2 rounded border border-gray-700 bg-black text-white text-lg placeholder-gray-400 mb-2 w-full"
                               placeholder="Blog Title"
                               value={editTitle}
                               onChange={e => setEditTitle(e.target.value)}
                             />
                             <textarea
-                              className="h-32 p-4 rounded border border-gray-700 bg-black text-white resize-none focus:outline-none focus:ring-2 focus:ring-blue-400 text-lg placeholder-gray-400 mb-2"
+                              className="h-24 sm:h-32 p-4 rounded border border-gray-700 bg-black text-white resize-none focus:outline-none focus:ring-2 focus:ring-blue-400 text-lg placeholder-gray-400 mb-2 w-full"
                               placeholder="Write your blog content..."
                               value={editContent}
                               onChange={e => setEditContent(e.target.value)}
                             />
                             {editError && <div className="text-red-500 text-sm mb-2">{editError}</div>}
                             {editSuccess && <div className="text-green-500 text-sm mb-2">{editSuccess}</div>}
-                            <div className="flex space-x-2">
+                            <div className="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-2">
                               <button
                                 type="submit"
-                                className="px-6 py-2 rounded bg-blue-600 hover:bg-blue-700 text-white font-semibold shadow transition-colors"
+                                className="px-6 py-2 rounded bg-blue-600 hover:bg-blue-700 text-white font-semibold shadow transition-colors w-full sm:w-auto"
                               >
                                 Save
                               </button>
                               <button
                                 type="button"
                                 onClick={() => setEditingBlog(null)}
-                                className="px-6 py-2 rounded bg-gray-600 hover:bg-gray-700 text-white font-semibold shadow transition-colors"
+                                className="px-6 py-2 rounded bg-gray-600 hover:bg-gray-700 text-white font-semibold shadow transition-colors w-full sm:w-auto"
                               >
                                 Cancel
                               </button>
