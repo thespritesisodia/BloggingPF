@@ -264,42 +264,53 @@ function App() {
               <img src={AdminIcon} alt="Admin" className="w-5 h-5" />
               <span className="hidden sm:inline">Admin</span>
             </button>
-            {/* Login Form Dropdown */}
             {showLogin && (
-              <div className="absolute top-12 right-0 bg-gray-900 border border-gray-700 rounded shadow-lg p-4 w-64">
-                <form onSubmit={handleAdminLogin}>
-                  <label className="block mb-2 text-sm font-semibold">Admin Password</label>
-                  <div className="relative">
-                    <input
-                      type={showPassword ? "text" : "password"}
-                      className="w-full p-2 rounded border border-gray-600 bg-black text-white mb-2 focus:outline-none focus:ring-2 focus:ring-blue-400 pr-10"
-                      value={adminPassword}
-                      onChange={e => setAdminPassword(e.target.value)}
-                      placeholder="Enter password"
-                    />
+              <>
+                {/* Overlay */}
+                <div
+                  className="fixed inset-0 z-40"
+                  onClick={() => setShowLogin(false)}
+                  aria-label="Close admin login panel"
+                />
+                {/* Panel */}
+                <div
+                  className="absolute top-12 right-0 bg-gray-900 border border-gray-700 rounded shadow-lg p-4 w-64 z-50"
+                  onClick={e => e.stopPropagation()}
+                >
+                  <form onSubmit={handleAdminLogin}>
+                    <label className="block mb-2 text-sm font-semibold">Admin Password</label>
+                    <div className="relative">
+                      <input
+                        type={showPassword ? "text" : "password"}
+                        className="w-full p-2 rounded border border-gray-600 bg-black text-white mb-2 focus:outline-none focus:ring-2 focus:ring-blue-400 pr-10"
+                        value={adminPassword}
+                        onChange={e => setAdminPassword(e.target.value)}
+                        placeholder="Enter password"
+                      />
+                      <button
+                        type="button"
+                        className="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-200 focus:outline-none"
+                        tabIndex={-1}
+                        onClick={() => setShowPassword(v => !v)}
+                        aria-label={showPassword ? "Hide password" : "Show password"}
+                      >
+                        {showPassword ? (
+                          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.875 18.825A10.05 10.05 0 0112 19c-5.523 0-10-4.477-10-10 0-1.657.403-3.22 1.125-4.575m1.875-2.25A9.956 9.956 0 0112 3c5.523 0 10 4.477 10 10 0 1.657-.403 3.22-1.125 4.575m-1.875 2.25A9.956 9.956 0 0112 21c-5.523 0-10-4.477-10-10 0-1.657.403-3.22 1.125-4.575" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
+                        ) : (
+                          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.477 0 8.268 2.943 9.542 7-.274.832-.642 1.624-1.09 2.354M15.54 15.54A5.978 5.978 0 0112 17c-3.314 0-6-2.686-6-6 0-.828.162-1.618.458-2.354" /></svg>
+                        )}
+                      </button>
+                    </div>
+                    {loginError && <div className="text-red-500 text-sm mb-2">{loginError}</div>}
                     <button
-                      type="button"
-                      className="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-200 focus:outline-none"
-                      tabIndex={-1}
-                      onClick={() => setShowPassword(v => !v)}
-                      aria-label={showPassword ? "Hide password" : "Show password"}
+                      type="submit"
+                      className="w-full py-2 rounded bg-blue-600 hover:bg-blue-700 text-white font-semibold shadow transition-colors"
                     >
-                      {showPassword ? (
-                        <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.875 18.825A10.05 10.05 0 0112 19c-5.523 0-10-4.477-10-10 0-1.657.403-3.22 1.125-4.575m1.875-2.25A9.956 9.956 0 0112 3c5.523 0 10 4.477 10 10 0 1.657-.403 3.22-1.125 4.575m-1.875 2.25A9.956 9.956 0 0112 21c-5.523 0-10-4.477-10-10 0-1.657.403-3.22 1.125-4.575" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
-                      ) : (
-                        <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.477 0 8.268 2.943 9.542 7-.274.832-.642 1.624-1.09 2.354M15.54 15.54A5.978 5.978 0 0112 17c-3.314 0-6-2.686-6-6 0-.828.162-1.618.458-2.354" /></svg>
-                      )}
+                      Login
                     </button>
-                  </div>
-                  {loginError && <div className="text-red-500 text-sm mb-2">{loginError}</div>}
-                  <button
-                    type="submit"
-                    className="w-full py-2 rounded bg-blue-600 hover:bg-blue-700 text-white font-semibold shadow transition-colors"
-                  >
-                    Login
-                  </button>
-                </form>
-              </div>
+                  </form>
+                </div>
+              </>
             )}
           </>
         ) : (
