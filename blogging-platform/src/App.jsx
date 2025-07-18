@@ -251,7 +251,12 @@ function App() {
   };
 
   return (
-    <div className={`min-h-screen w-full flex flex-col transition-colors relative ${dark ? 'bg-black text-white' : 'bg-white text-black'}`}>
+    <div
+      className={`min-h-screen w-full flex flex-col transition-colors relative text-white`}
+      style={{
+        background: 'linear-gradient(180deg, #2d0036 0%, #3a0147 40%, #000 100%)'
+      }}
+    >
       {/* Top right: Admin controls */}
       <div className="fixed top-4 right-4 flex items-center space-x-2 z-50 sm:absolute sm:top-6 sm:right-8">
         {!isAdmin ? (
