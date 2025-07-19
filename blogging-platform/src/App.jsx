@@ -3,6 +3,8 @@ import './index.css'
 import DarkModeIcon from './assets/darkmode.png';
 import AdminIcon from './assets/admin.png';
 import MyXIcon from './assets/myxicon.png';
+import IntroductionImg from './assets/Introduction.png';
+import EPollImg from './assets/e-poll.png';
 
 const PROFILE_IMG = MyXIcon;
 const X_LINK = 'https://x.com/basbhaisprite';
@@ -439,6 +441,10 @@ function App() {
               </button>
             </form>
           )}
+          {/* Section label for blogs */}
+          <div className="w-full flex justify-start items-center mt-8 mb-2 pl-0 -ml-4">
+            <span className="text-2xl font-bold text-pink-400">&lt;blogs</span>
+          </div>
           {/* Blog List (public) or Blog Detail */}
           <div className="w-full max-w-5xl mt-8 sm:mt-20">
             {selectedBlog ? (
@@ -498,15 +504,32 @@ function App() {
               <div className="text-gray-400 text-center text-lg">No blogs available</div>
             ) : (
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-8">
-                {blogs.map(blog => (
-                  <div
-                    key={blog._id}
-                    className={`flex flex-col justify-between h-full rounded-lg shadow-md border transition hover:scale-[1.02] cursor-pointer overflow-hidden ${dark ? 'bg-gray-900 border-gray-700 hover:bg-gray-800' : 'bg-white border-gray-200 hover:bg-gray-100'}`}
-                  >
-                    {/* Placeholder image */}
-                    <div className="h-28 sm:h-36 w-full bg-gradient-to-br from-blue-400 to-blue-200 flex items-center justify-center">
-                      <span className="text-3xl sm:text-4xl text-white opacity-60">📝</span>
-                    </div>
+                {blogs.map((blog, idx) => {
+                  let imageUrl = '';
+                  if (idx === 0) {
+                    imageUrl = EPollImg; // First blog gets Introduction.png
+                  } else if (idx === 1) {
+                    imageUrl = IntroductionImg; // Second blog gets e-poll.png
+                  } else {
+                    const imageSection = blog.sections && blog.sections.find(s => s.type === 'image' && s.content);
+                    imageUrl = imageSection ? imageSection.content : '';
+                  }
+                  return (
+                    <div
+                      key={blog._id}
+                      className={`flex flex-col justify-between h-full rounded-lg shadow-md border transition hover:scale-[1.02] cursor-pointer overflow-hidden ${dark ? 'bg-gray-900 border-gray-700 hover:bg-gray-800' : 'bg-white border-gray-200 hover:bg-gray-100'}`}
+                    >
+                      {/* Blog image */}
+                      <div className="h-28 sm:h-36 w-full flex items-center justify-center bg-black">
+                        {imageUrl && (
+                          <img
+                            src={imageUrl}
+                            alt="Blog visual"
+                            className="object-cover w-full h-full rounded-t-lg"
+                            style={{ maxHeight: '100%', maxWidth: '100%' }}
+                          />
+                        )}
+                      </div>
                     <div className="flex-1 flex flex-col p-3 sm:p-5">
                       <div className={`text-lg sm:text-xl font-bold mb-2 uppercase ${dark ? 'text-white' : 'text-black'}`}>{blog.title}</div>
                       <div className={`truncate mb-4 ${dark ? 'text-gray-300' : 'text-gray-800'} text-sm sm:text-base`}>
@@ -608,7 +631,8 @@ function App() {
                       </div>
                     )}
                   </div>
-                ))}
+                );
+              })}
               </div>
             )}
           </div>
